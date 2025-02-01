@@ -8,6 +8,6 @@ export const setAuthorizationHeader = (accesToken: string) => {
   client.defaults.headers["Authorization"] = `Bearer ${accesToken}`;
 };
 
-export const unsetAuthorizationHeader = () => {
+export const removeAuthorizationHeader = () => {
   delete client.defaults.headers["Authorization"];
 };
