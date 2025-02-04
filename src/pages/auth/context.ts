@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 // Interface to define the structure for the context of authentication
 interface AuthContextValue {
-  isLogged: false;
+  isLogged: boolean;
   onLogin: () => void;
   onLogout: () => void;
 }
