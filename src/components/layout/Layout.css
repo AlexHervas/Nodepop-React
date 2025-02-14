@@ -1,0 +1,29 @@
+.layout-main {
+  max-width: 660px;
+  min-height: calc(100vh - 128px);
+  margin: 0 auto;
+  border-style: solid;
+  border-color: #4a4a4a;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  background-color: #7a7a7a;
+  color: #f0f0f0;
+}
+
+@media (max-width: 660px) {
+  .layout-main {
+    border-style: none;
+  }
+}
+
+.layout-title {
+  align-items: center;
+  border-style: solid;
+  border-color: #4a4a4a;
+  border-bottom-width: 1px;
+  display: flex;
+  height: 52px;
+  padding: 0 15px;
+  background-color: #7a7a7a;
+  color: #f0f0f0;
+}

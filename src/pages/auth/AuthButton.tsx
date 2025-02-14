@@ -1,4 +1,4 @@
-import Button from "../../shared/Button";
+import Button from "../../components/shared/Button";
 import { useAuth } from "../../pages/auth/context";
 import { logout } from "../../pages/auth/service";
 

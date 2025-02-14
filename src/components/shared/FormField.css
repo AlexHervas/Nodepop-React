@@ -1,0 +1,46 @@
+.formField {
+  background-color: #7a7a7a;
+  padding: 10px 0;
+  border-radius: 4px;
+}
+
+.formField-label {
+  background-color: #7a7a7a;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-color: #4a4a4a;
+  border-radius: 2px;
+  color: #4a4a4a;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease-in-out;
+}
+
+.formField-input {
+  background-color: transparent;
+  font-size: 18px;
+  height: 36px;
+  outline-style: none;
+  padding: 5px 10px;
+  width: 100%;
+  color: #4a4a4a;
+  border: none;
+}
+
+.formField-label span {
+  padding: 5px 10px 0 10px;
+}
+
+.formField-label span:first-letter {
+  text-transform: capitalize;
+}
+
+.formField-label:has(:focus) {
+  color: #3a3a3a;
+  border-color: #3a3a3a;
+}
+
+.formField-label:hover {
+  background-color: #9a9a9a;
+  border-color: #3a3a3a;
+}
