@@ -6,11 +6,20 @@ import {
 import storage from "../../utils/storage";
 import { Credentials, Login } from "./types";
 
-export const login = async (credentials: Credentials) => {
-  const response = await client.post<Login>("api/auth/login", credentials);
-  const { accesToken } = response.data;
-  storage.set("auth", accesToken);
-  setAuthorizationHeader(accesToken);
+const loginUrl = "api/auth/login";
+
+export const login = async (
+  credentials: Credentials,
+  localSavedToken: boolean,
+) => {
+  const response = await client.post<Login>(loginUrl, credentials);
+  const { accessToken } = response.data;
+  if (localSavedToken) {
+    localStorage.setItem("auth", accessToken);
+  } else {
+    storage.set("auth", accessToken);
+  }
+  setAuthorizationHeader(accessToken);
 };
 
 export const logout = async () => {

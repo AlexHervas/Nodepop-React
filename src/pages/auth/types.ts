@@ -4,5 +4,5 @@ export interface Credentials {
 }
 
 export interface Login {
-  accesToken: string;
+  accessToken: string;
 }

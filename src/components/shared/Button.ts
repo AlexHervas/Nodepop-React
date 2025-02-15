@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Button = styled.button<{ $variant: "primary" | "secondary" }>`
+const Button = styled.button<{ $variant?: "primary" | "secondary" }>`
   cursor: pointer;
   border-radius: 9999px;
   border: 1px solid;

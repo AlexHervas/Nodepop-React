@@ -1,0 +1,93 @@
+.advert-container {
+  background-color: #f5f5f5;
+  border: 1px solid #7a7a7a;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.advert-container:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.advert-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #4a4a4a;
+  text-decoration: none;
+}
+
+.advert-name:hover {
+  color: #3a3a3a;
+}
+
+.advert-span {
+  display: block;
+  height: 1px;
+  background-color: #7a7a7a;
+  margin: 8px 0;
+}
+
+.advert-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4a4a4a;
+}
+
+.advert-sale {
+  font-size: 14px;
+  font-style: italic;
+  color: #7a7a7a;
+}
+
+.advert-tags {
+  font-size: 14px;
+  color: #9a9a9a;
+}
+
+.advertsPage-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #7a7a7a;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  max-width: 400px;
+  margin: 40px auto;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.advertsPage-empty p {
+  font-size: 16px;
+  color: #4a4a4a;
+  margin-bottom: 12px;
+}
+
+.advertsPage-empty a {
+  text-decoration: none;
+}
+
+.advertsPage-empty button {
+  background-color: #4a4a4a;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.advertsPage-empty button:hover {
+  background-color: #3a3a3a;
+  transform: translateY(-2px);
+}

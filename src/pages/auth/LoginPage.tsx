@@ -1,61 +1,101 @@
 import { useState } from "react";
 import Button from "../../components/shared/Button";
 import { login } from "./service";
+import { useAuth } from "./context";
+import { ApiClientError } from "../../api/error";
+import { isApiClientError } from "../../api/client";
+import { useLocation, useNavigate } from "react-router-dom";
+import FormField from "../../components/shared/FormField";
+import "./LoginPage.css"
 
-interface Props {
-  onLogin: (message: string) => void;
-}
-
-function LoginPage({ onLogin }: Props) {
-  const [email, setUsername] = useState("");
+function LoginPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [localSavedToken, setLocalSavedToken] = useState(false);
+  const { onLogin } = useAuth();
+  const [error, setError] = useState<ApiClientError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const response = await login({
-        email,
-        password,
-      });
+      setIsLoading(true);
+      const response = await login(
+        {
+          email,
+          password,
+        },
+        localSavedToken,
+      );
+
       console.log(response);
-      onLogin("Hello");
+      onLogin();
+      const to = location.state?.from ?? "/";
+      navigate(to, { replace: true });
     } catch (error) {
-      console.error(error);
+      if (isApiClientError(error)) {
+        setError(error);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
+
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-  const isDisabled = !email || !password;
+
+  const handleLocalSavedTokenChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setLocalSavedToken(event.target.checked);
+  };
+
+  const isDisabled = !email || !password || isLoading;
+
   return (
-    <div>
+    <div className="login">
       <h1>Log in</h1>
       <form onSubmit={handleSubmit}>
-        <label className="block">
-          Username:
+        <FormField
+          type="text"
+          name="email"
+          label="Email"
+          value={email}
+          onChange={handleEmailChange}
+        />
+        <FormField
+          type="password"
+          name="password"
+          label="Password"
+          value={password}
+          onChange={handlePasswordChange}
+        />
+        <div className="local-saved-token">
           <input
-            type="text"
-            name="email"
-            value={email}
-            onChange={handleUsernameChange}
+            type="checkbox"
+            id="localSavedToken"
+            checked={localSavedToken}
+            onChange={handleLocalSavedTokenChange}
           />
-        </label>
-        <label className="block">
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </label>
-        <Button type="submit" $variant="primary" disabled={isDisabled}>
-          Log in
+          <label htmlFor="localSavedToken">Save credentials</label>
+        </div>
+        <Button type="submit" disabled={isDisabled} className="loginBtn-submit">
+          {isLoading ? "Logging in..." : "Log in"}
         </Button>
+
+        {error && (
+          <div className="login-error" onClick={() => setError(null)}>
+            {error.message}
+          </div>
+        )}
       </form>
     </div>
   );
