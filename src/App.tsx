@@ -3,6 +3,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import RequireAuth from "./pages/auth/RequireAuth";
 import Layout from "./components/layout/Layout";
+import NewAdvertPage from "./pages/adverts/NewAdvertPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         }
       >
         <Route index element={<AdvertsPage />} />
+        <Route path="new" element={<NewAdvertPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/adverts" />} />

@@ -17,13 +17,20 @@
 }
 
 .layout-title {
-  align-items: center;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   border-style: solid;
   border-color: #4a4a4a;
   border-bottom-width: 1px;
-  display: flex;
-  height: 52px;
   padding: 0 15px;
-  background-color: #7a7a7a;
   color: #f0f0f0;
+}
+
+.layout-page {
+  margin: 2rem auto;
+  padding: 2rem;
 }

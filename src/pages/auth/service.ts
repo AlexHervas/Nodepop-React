@@ -10,15 +10,13 @@ const loginUrl = "api/auth/login";
 
 export const login = async (
   credentials: Credentials,
-  localSavedToken: boolean,
+  localSavedToken: boolean
 ) => {
   const response = await client.post<Login>(loginUrl, credentials);
   const { accessToken } = response.data;
-  if (localSavedToken) {
-    localStorage.setItem("auth", accessToken);
-  } else {
-    storage.set("auth", accessToken);
-  }
+
+  storage.set("auth", accessToken, localSavedToken);
+
   setAuthorizationHeader(accessToken);
 };
 

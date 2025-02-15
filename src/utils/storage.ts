@@ -2,25 +2,25 @@ type StorageKey = "auth";
 
 const storage = {
   get(key: StorageKey) {
-    const value = localStorage.getItem(key);
-
-    if (!value) {
-      return null;
-    }
-
-    return value;
+    return localStorage.getItem(key) || sessionStorage.getItem(key);
   },
 
-  set(key: StorageKey, value: string) {
-    localStorage.setItem(key, value);
+  set(key: StorageKey, value: string, persist: boolean) {
+    if (persist) {
+      localStorage.setItem(key, value);
+    } else {
+      sessionStorage.setItem(key, value);
+    }
   },
 
   remove(key: StorageKey) {
     localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
   },
 
   clear() {
     localStorage.clear();
+    sessionStorage.clear();
   },
 };
 
