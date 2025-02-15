@@ -4,6 +4,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import RequireAuth from "./pages/auth/RequireAuth";
 import Layout from "./components/layout/Layout";
 import NewAdvertPage from "./pages/adverts/NewAdvertPage";
+import AdvertPage from "./pages/adverts/AdvertPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       >
         <Route index element={<AdvertsPage />} />
         <Route path="new" element={<NewAdvertPage />} />
+        <Route path=":advertId" element={<AdvertPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/adverts" />} />

@@ -6,7 +6,7 @@ import { ApiClientError } from "../../api/error";
 import { isApiClientError } from "../../api/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import FormField from "../../components/shared/FormField";
-import "./LoginPage.css"
+import "./LoginPage.css";
 
 function LoginPage() {
   const location = useLocation();
@@ -61,42 +61,52 @@ function LoginPage() {
   const isDisabled = !email || !password || isLoading;
 
   return (
-    <div className="login">
-      <h1>Log in</h1>
-      <form onSubmit={handleSubmit}>
-        <FormField
-          type="text"
-          name="email"
-          label="Email"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <FormField
-          type="password"
-          name="password"
-          label="Password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <div className="local-saved-token">
-          <input
-            type="checkbox"
-            id="localSavedToken"
-            checked={localSavedToken}
-            onChange={handleLocalSavedTokenChange}
+    <div className="login-container">
+      <div className="login-form-container">
+        <h1>Log in</h1>
+        <form onSubmit={handleSubmit}>
+          <FormField
+            type="email"
+            name="email"
+            label="Email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="Enter your email"
           />
-          <label htmlFor="localSavedToken">Save credentials</label>
-        </div>
-        <Button type="submit" disabled={isDisabled} className="loginBtn-submit">
-          {isLoading ? "Logging in..." : "Log in"}
-        </Button>
+          <FormField
+            type="password"
+            name="password"
+            label="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="Enter your password"
+          />
+
+          <div className="local-saved-token">
+            <input
+              type="checkbox"
+              id="localSavedToken"
+              checked={localSavedToken}
+              onChange={handleLocalSavedTokenChange}
+            />
+            <label htmlFor="localSavedToken">Save credentials</label>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isDisabled}
+            className="loginBtn-submit"
+          >
+            {isLoading ? "Logging in..." : "Log in"}
+          </Button>
+        </form>
 
         {error && (
           <div className="login-error" onClick={() => setError(null)}>
             {error.message}
           </div>
         )}
-      </form>
+      </div>
     </div>
   );
 }

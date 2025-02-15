@@ -7,6 +7,11 @@
   transition:
     background-color 0.2s,
     transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .advert-container:hover {
@@ -15,14 +20,22 @@
 }
 
 .advert-name {
-  font-size: 18px;
+  font-size: 25px;
   font-weight: bold;
   color: #4a4a4a;
-  text-decoration: none;
+  margin: 10px 0;
 }
 
 .advert-name:hover {
   color: #3a3a3a;
+}
+
+.advert-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .advert-span {
@@ -30,10 +43,11 @@
   height: 1px;
   background-color: #7a7a7a;
   margin: 8px 0;
+  width: 100%;
 }
 
 .advert-price {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   color: #4a4a4a;
 }
@@ -90,4 +104,8 @@
 .advertsPage-empty button:hover {
   background-color: #3a3a3a;
   transform: translateY(-2px);
+}
+
+a {
+  text-decoration: none;
 }

@@ -1,46 +1,38 @@
 .header {
-  position: sticky;
-  top: 0;
-  height: 64px;
+  background-color: #4a4a4a;
+  padding: 15px 20px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
-  border-style: solid;
-  border-color: #4a4a4a;
-  border-bottom-width: 1px;
-  background-color: #7a7a7a;
-  color: #f0f0f0;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .header-nav {
   display: flex;
-  justify-content: flex-end;
   flex: 1;
+  justify-content: center;
+  gap: 20px;
 }
 
-.header-nav .header-nav-item {
-  align-self: center;
-  margin-left: 8px;
-  color: #4a4a4a;
-}
-
-.header-nav .active {
-  color: #3a3a3a;
-}
-
-.header-button {
-  width: 144px;
-  margin-left: 10px;
-  background-color: #4a4a4a;
-  color: #f0f0f0;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
+.header-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease-in-out;
 }
 
-.header-button:hover {
+.header-nav a:hover {
   background-color: #3a3a3a;
+}
+
+.header-nav a.selected {
+  background-color: #7a7a7a;
+  border-radius: 8px;
+}
+
+.header-nav a.selected:hover {
+  background-color: #9a9a9a;
 }

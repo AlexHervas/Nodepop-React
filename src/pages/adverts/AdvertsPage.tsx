@@ -12,6 +12,7 @@ function AdvertsPage() {
   const [filteredName, setFilteredName] = useState("");
   const [filteredSale, setFilteredSale] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
   useEffect(() => {
     getLatestAdverts()
@@ -47,53 +48,45 @@ function AdvertsPage() {
     return matchesName && matchesSale;
   });
 
+  const saleOptions = ["sell", "buy", "all"];
+
+  const toggleFilters = () => setIsFiltersVisible((prev) => !prev);
+
   return (
     <Page title="Advert List">
-      <FormField
-        type="text"
-        name="query"
-        value={filteredName}
-        onChange={handleSearch}
-        label={"Filter by name"}
-      ></FormField>
+      <div className="advert-filters-container">
+        <button className="advert-filters-toggle" onClick={toggleFilters}>
+          {isFiltersVisible ? "Hide Filters ▲" : "Show Filters ▼"}
+        </button>
 
-      <div className="advert-filters">
-        <p>Filter by sale type:</p>
-
-        <label>
-          <input
-            type="radio"
-            name="sale"
-            value="sell"
-            onChange={handleTypeRadio}
-          />
-          Sell
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            name="sale"
-            value="buy"
-            onChange={handleTypeRadio}
-          />
-          Buy
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            name="sale"
-            value="all"
-            onChange={handleTypeRadio}
-          />
-          All
-        </label>
+        {isFiltersVisible && (
+          <div className="advert-filters">
+            <FormField
+              type="text"
+              name="query"
+              value={filteredName}
+              onChange={handleSearch}
+              label={"Filter by name"}
+            ></FormField>
+            <p>Filter by sale type:</p>
+            {saleOptions.map((option) => (
+              <label key={option}>
+                <input
+                  type="radio"
+                  name="sale"
+                  value={option}
+                  onChange={handleTypeRadio}
+                />
+                {option.toUpperCase().slice(0, 1) + option.slice(1)}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="adverts-container">
         {loading ? (
-          <p>Loading adverts...</p>
+          <p className="adverts-loading">Loading adverts... ⏳</p>
         ) : filteredAdverts.length !== 0 ? (
           <div className="advert-div">
             {filteredAdverts.map((advert) => (
