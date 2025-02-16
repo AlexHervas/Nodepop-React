@@ -19,8 +19,8 @@ export default function Header() {
         >
           Latest Adverts
         </NavLink>
-        <AuthButton />
       </nav>
+        <AuthButton />
     </header>
   );
 }

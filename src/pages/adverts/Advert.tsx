@@ -2,24 +2,33 @@ import type { Advert } from "./types";
 import "./Advert.css";
 
 const AdvertContainer = ({ id, name, sale, price, tags, photo }: Advert) => {
-  const placeholderImage =
-    "https://placehold.co/600x400";
+  // Imagen por defecto en caso de que el anuncio no tenga foto
+  const placeholderImage = "https://placehold.co/600x400";
 
   return (
     <div className="advert-container">
+      {/* Nombre del anuncio */}
+      <p className="advert-name">{name}</p>
+
+      {/* Imagen del anuncio, enlazada a la página de detalles */}
       <a href={`/adverts/${id}`}>
-        <p className="advert-name">{name}</p>
+        <img
+          src={photo || placeholderImage} // Si no hay foto, usa la imagen de placeholder
+          alt={name} // Descripción alternativa para accesibilidad
+          className="advert-image"
+        />
       </a>
 
-      <img
-        src={photo || placeholderImage}
-        alt={name}
-        className="advert-image"
-      />
-
+      {/* Espacio visual para separar elementos */}
       <span className="advert-span"></span>
+
+      {/* Precio del anuncio */}
       <p className="advert-price">{price} €</p>
+
+      {/* Tipo de transacción (venta o compra) */}
       <p className="advert-sale">{sale ? "For Sale" : "For Buy"}</p>
+
+      {/* Etiquetas del anuncio, mostrando un mensaje si no tiene ninguna */}
       <p className="advert-tags">
         {tags.length > 0 ? tags.join(", ") : "No tags available"}
       </p>
