@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewAdvert } from "./types";
 import { useNavigate } from "react-router-dom";
-import { createAdvert } from "./service";
+import { createAdvert, getTags } from "./service";
 import { isApiClientError } from "../../api/client";
 import Page from "../../components/layout/Page";
 import FormField from "../../components/shared/FormField";
@@ -22,8 +22,28 @@ function NewAdvertPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Estado para controlar el estado de carga del formulario
   const [isLoading, setIsLoading] = useState(false);
+
+  // Estado para los tags, cargados desde la API
+  const [tagOptions, setTagOptions] = useState<string[]>([]);
+  const [loadingTags, setLoadingTags] = useState(true);
+  const [tagsError, setTagsError] = useState<string | null>(null);
+
   // Hook para la navegación de páginas
   const navigate = useNavigate();
+
+  // Obtención de los tags de la API al montar el componente
+  useEffect(() => {
+    getTags()
+      .then((response) => {
+        setTagOptions(response.tags);
+        setLoadingTags(false);
+      })
+      .catch((error) => {
+        console.error("Error loagind tags: ", error);
+        setTagsError("The tags could not be loaded correctly");
+        setLoadingTags(false);
+      });
+  }, []);
 
   // Maneja el envío del formulario
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -94,8 +114,6 @@ function NewAdvertPage() {
     });
   };
 
-  // Opciones de etiquetas disponibles
-  const tagOptions = ["lifestyle", "mobile", "motor", "work"];
   const { name, price, tags } = advert;
   // Deshabilita el botón de envío si los campos obligatorios no están completos
   const isDisabled = !name || price <= 0 || tags.length === 0 || isLoading;
@@ -143,18 +161,24 @@ function NewAdvertPage() {
         {/* Sección para seleccionar etiquetas */}
         <div className="formField">
           <span>Tags</span>
-          {tagOptions.map((tag) => (
-            <label key={tag}>
-              <input
-                type="checkbox"
-                name="tags"
-                value={tag}
-                checked={advert.tags.includes(tag)}
-                onChange={handleChange}
-              />
-              {tag.charAt(0).toUpperCase() + tag.slice(1)}
-            </label>
-          ))}
+          {loadingTags && <p>Loading tags...</p>}
+          {tagsError && <p className="error">{tagsError}</p>}
+          {!tagsError && !loadingTags && (
+            <>
+              {tagOptions.map((tag) => (
+                <label key={tag}>
+                  <input
+                    type="checkbox"
+                    name="tags"
+                    value={tag}
+                    checked={advert.tags.includes(tag)}
+                    onChange={handleChange}
+                  />
+                  {tag.charAt(0).toUpperCase() + tag.slice(1)}
+                </label>
+              ))}
+            </>
+          )}
         </div>
 
         {/* Campo para subir una foto */}

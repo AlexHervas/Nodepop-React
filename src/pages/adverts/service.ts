@@ -4,6 +4,9 @@ import type { Advert } from "./types";
 // Definimos la URL base de la API para los anuncios
 const advertsUrl = "/api/v1/adverts";
 
+// Definimos la URL base para obtener los tags de la API
+const tagsUrl = "/api/v1/adverts/tags";
+
 /**
  * Obtiene la lista de los anuncios más recientes {Promise<Advert[]>} - Una promesa que resuelve con un array de anuncios.
  */
@@ -39,4 +42,13 @@ export const getAdvert = async (advertId: string) => {
 export const deleteAdvert = async (advertId: string) => {
   const response = await client.delete<Advert>(`${advertsUrl}/${advertId}`);
   return response.data;
+};
+
+/**
+ * Obtiene la lista de tags de la API.
+ */
+
+export const getTags = async () => {
+  const response = await client.get<string[]>(`${tagsUrl}`);
+  return { tags: response.data };
 };
