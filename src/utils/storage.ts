@@ -13,11 +13,8 @@ const storage = {
   },
 
   // Método para establecer un valor en el almacenamiento según 'persist'
-  set(key: StorageKey, value: string, persist: boolean) {
-    // Si 'persist' es true, guarda el valor en localStorage (persistente)
-    if (persist) {
-      localStorage.setItem(key, value);
-    }
+  set(key: StorageKey, value: string) {
+    localStorage.setItem(key, value);
   },
 
   // Método para eliminar un valor del almacenamiento

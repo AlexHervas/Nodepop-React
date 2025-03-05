@@ -89,6 +89,9 @@ function AdvertPage() {
             onConfirm={handleDelete}
             onCancel={() => setShowConfirmation(false)}
             disabled={loading}
+            title="Delete Advert"
+            confirmButtonText="Delete"
+            message="Do you want to delete the advert, the action is permanent"
           />
         </div>
       ) : (

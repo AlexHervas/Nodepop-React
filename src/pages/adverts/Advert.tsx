@@ -1,5 +1,6 @@
 import type { Advert } from "./types";
 import "./Advert.css";
+import { Link } from "react-router-dom";
 
 const AdvertContainer = ({ id, name, sale, price, tags, photo }: Advert) => {
   // Imagen por defecto en caso de que el anuncio no tenga foto
@@ -11,13 +12,13 @@ const AdvertContainer = ({ id, name, sale, price, tags, photo }: Advert) => {
       <p className="advert-name">{name}</p>
 
       {/* Imagen del anuncio, enlazada a la página de detalles */}
-      <a href={`/adverts/${id}`}>
+      <Link to={`/adverts/${id}`}>
         <img
           src={photo || placeholderImage} // Si no hay foto, usa la imagen de placeholder
           alt={name} // Descripción alternativa para accesibilidad
           className="advert-image"
         />
-      </a>
+      </Link>
 
       {/* Espacio visual para separar elementos */}
       <span className="advert-span"></span>

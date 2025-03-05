@@ -9,6 +9,8 @@ import AdvertPage from "./pages/adverts/AdvertPage";
 function App() {
   return (
     <Routes>
+      {/* Ruta inicial: Redirige a "/adverts" cuando se accede a la raíz de la aplicación */}
+      <Route index element={<Navigate to="/adverts" />}></Route>
       {/* Ruta para la página de login, sin autenticación requerida */}
       <Route path="/login" element={<LoginPage />} />
 

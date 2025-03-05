@@ -21,7 +21,9 @@ export const login = async (
   const { accessToken } = response.data;
 
   // Guarda el token de acceso en el almacenamiento local si localSavedToken es true
-  storage.set("auth", accessToken, localSavedToken);
+  if (localSavedToken) {
+    storage.set("auth", accessToken);
+  }
 
   // Establece el token de autorización en los encabezados para futuras solicitudes
   setAuthorizationHeader(accessToken);

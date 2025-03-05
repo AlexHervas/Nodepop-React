@@ -7,15 +7,20 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
   onCancel: () => void;
   disabled?: boolean;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
 }
 
 export default function ConfirmDialog({
   isOpen,
-  title = "Confirm Deletion",
-  message = "Are you sure you want to delete this advert? This action cannot be undone.",
+  title = "Confirm Action",
+  message = "Are you sure you want to proceed with this action?",
+  // message = "Are you sure you want to delete this advert? This action cannot be undone.",
   onConfirm,
   onCancel,
   disabled = false,
+  confirmButtonText = "Confirm",
+  cancelButtonText = "Cancel",
 }: ConfirmDialogProps) {
   if (!isOpen) return null;
 
@@ -30,14 +35,14 @@ export default function ConfirmDialog({
             onClick={onConfirm}
             disabled={disabled}
           >
-            {disabled ? "Deleting..." : "Delete"}{" "}
+            {disabled ? "Processing..." : confirmButtonText}
           </button>
           <button
             className="cancel-button"
             onClick={onCancel}
             disabled={disabled}
           >
-            Cancel
+            {cancelButtonText}
           </button>
         </div>
       </div>
