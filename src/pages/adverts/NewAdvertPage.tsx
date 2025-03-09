@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
-import { NewAdvert } from "./types";
 import { useNavigate } from "react-router-dom";
-import { createAdvert, getTags } from "./service";
-import { isApiClientError } from "../../api/client";
 import Page from "../../components/layout/Page";
 import FormField from "../../components/shared/FormField";
 import Button from "../../components/shared/Button";
 import "./NewAdvertPage.css";
 
+// Importamos los hooks tipados y las acciones/thunks del store
+import { useAppDispatch, useAppSelector } from "../../store";
+import { advertsCreate, tagsLoaded } from "../../store/actions";
+import { isApiClientError } from "../../api/client";
+
+// Importamos el tipo para el nuevo anuncio
+import { NewAdvert } from "./types";
+
 function NewAdvertPage() {
-  // Estado para almacenar los datos del nuevo anuncio
+  // Estado local para el nuevo anuncio
   const [advert, setAdvert] = useState<NewAdvert>({
     name: "",
     sale: true,
@@ -17,62 +22,46 @@ function NewAdvertPage() {
     tags: [],
     photo: null,
   });
-
-  // Estado para manejar mensajes de error
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // Estado para controlar el estado de carga del formulario
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estado para los tags, cargados desde la API
-  const [tagOptions, setTagOptions] = useState<string[]>([]);
-  const [loadingTags, setLoadingTags] = useState(true);
-  const [tagsError, setTagsError] = useState<string | null>(null);
-
-  // Hook para la navegación de páginas
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  // Obtención de los tags de la API al montar el componente
+  // Obtenemos las opciones de tags desde el store
+  const tagOptions = useAppSelector((state) => state.adverts.tags);
+  // Si el array de tags está vacío, consideramos que aún se están cargando
+  const loadingTags = tagOptions.length === 0;
+
+  // Al montar, se despacha la acción para cargar los tags globalmente
   useEffect(() => {
-    getTags()
-      .then((response) => {
-        setTagOptions(response.tags);
-        setLoadingTags(false);
-      })
-      .catch((error) => {
-        console.error("Error loagind tags: ", error);
-        setTagsError("The tags could not be loaded correctly");
-        setLoadingTags(false);
-      });
-  }, []);
+    dispatch(tagsLoaded() as any);
+  }, [dispatch]);
 
-  // Maneja el envío del formulario
+  // Maneja el envío del formulario para crear el anuncio
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
     setIsLoading(true);
 
-    // Crea un objeto FormData para enviar los datos del anuncio
+    // Preparamos los datos en FormData para enviar, ya que el servicio espera FormData
     const formData = new FormData();
     formData.append("name", advert.name);
     formData.append("sale", String(advert.sale));
     formData.append("price", String(advert.price));
     formData.append("tags", advert.tags.join(","));
-
-    // Si hay una foto, se añade al FormData
     if (advert.photo) {
       formData.append("photo", advert.photo);
     }
 
     try {
-      // Llama a la API para crear el anuncio
-      const createdAdvert = await createAdvert(formData);
-      // Redirige a la página del anuncio recién creado
+      // Despachamos la acción asíncrona para crear el anuncio.
+      // Se espera que advertsCreate retorne el anuncio creado.
+      const createdAdvert = await dispatch(advertsCreate(formData) as any);
       navigate(`/adverts/${createdAdvert.id}`);
     } catch (error) {
-      // Manejo de errores de la API
       if (isApiClientError(error)) {
         if (error.code === "UNAUTHORIZED") {
-          // Si el usuario no está autenticado, lo redirige a login
           navigate("/login");
         } else {
           setErrorMessage(
@@ -85,7 +74,7 @@ function NewAdvertPage() {
     }
   };
 
-  // Maneja los cambios en los campos del formulario
+  // Maneja cambios en los inputs del formulario
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -94,19 +83,15 @@ function NewAdvertPage() {
 
     setAdvert((prevAdvert) => {
       if (type === "file" && files) {
-        // Si se sube una imagen, se almacena en el estado
         return { ...prevAdvert, photo: files[0] };
       }
-
       if (type === "checkbox") {
-        // Manejo de selección de etiquetas (tags)
+        // Actualiza el array de tags
         const newTags = checked
           ? [...prevAdvert.tags, value]
           : prevAdvert.tags.filter((tag) => tag !== value);
         return { ...prevAdvert, tags: newTags };
       }
-
-      // Actualiza el estado según el tipo de input
       return {
         ...prevAdvert,
         [name]: name === "sale" ? value === "true" : value,
@@ -115,14 +100,13 @@ function NewAdvertPage() {
   };
 
   const { name, price, tags } = advert;
-  // Deshabilita el botón de envío si los campos obligatorios no están completos
+  // Deshabilita el botón si faltan campos obligatorios o si está en proceso
   const isDisabled = !name || price <= 0 || tags.length === 0 || isLoading;
 
   return (
     <Page title="Create your advert">
-      {/* Formulario de creación de anuncio */}
       <form className="newAdvertPage-form" onSubmit={handleSubmit}>
-        {/* Campo para el nombre del producto */}
+        {/* Campo para el nombre */}
         <FormField
           type="text"
           name="name"
@@ -162,26 +146,22 @@ function NewAdvertPage() {
         <div className="formField">
           <span>Tags</span>
           {loadingTags && <p>Loading tags...</p>}
-          {tagsError && <p className="error">{tagsError}</p>}
-          {!tagsError && !loadingTags && (
-            <>
-              {tagOptions.map((tag) => (
-                <label key={tag}>
-                  <input
-                    type="checkbox"
-                    name="tags"
-                    value={tag}
-                    checked={advert.tags.includes(tag)}
-                    onChange={handleChange}
-                  />
-                  {tag.charAt(0).toUpperCase() + tag.slice(1)}
-                </label>
-              ))}
-            </>
-          )}
+          {!loadingTags &&
+            tagOptions.map((tag) => (
+              <label key={tag}>
+                <input
+                  type="checkbox"
+                  name="tags"
+                  value={tag}
+                  checked={advert.tags.includes(tag)}
+                  onChange={handleChange}
+                />
+                {tag.charAt(0).toUpperCase() + tag.slice(1)}
+              </label>
+            ))}
         </div>
 
-        {/* Campo para subir una foto */}
+        {/* Campo para subir foto */}
         <FormField
           type="file"
           name="photo"
@@ -190,10 +170,10 @@ function NewAdvertPage() {
           onChange={handleChange}
         />
 
-        {/* Muestra un mensaje de error si existe */}
+        {/* Mensaje de error */}
         {errorMessage && <div className="error">{errorMessage}</div>}
 
-        {/* Botón para crear el anuncio */}
+        {/* Botón para enviar */}
         <Button
           className="button"
           type="submit"

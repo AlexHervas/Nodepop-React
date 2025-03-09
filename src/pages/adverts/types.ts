@@ -1,6 +1,6 @@
 // Definimos la interfaz Advert, que representa un anuncio existente en la aplicación.
 export interface Advert {
-  id: number;
+  id: string;
   name: string;
   sale: boolean;
   price: number;

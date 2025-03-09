@@ -1,36 +1,36 @@
 import { useState } from "react";
 import Button from "../../components/shared/Button";
-import { useAuth } from "../../pages/auth/context";
-import { logout } from "../../pages/auth/service";
 import ConfirmDialog from "../../components/shared/ConfirmDialog";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { authLogout } from "../../store/actions"; // Acción de logout definida en actions.ts
+import { logout } from "../../pages/auth/service"; // Servicio para logout
 
-// Componente AuthButton que muestra un botón de "Login" o "Logout" según el estado de autenticación
 export default function AuthButton() {
-  // Accede al estado de autenticación y a la función onLogout desde el contexto de autenticación
-  const { isLogged, onLogout } = useAuth();
+  // Obtenemos el estado de autenticación desde Redux
+  const isLogged = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-  // Función para manejar la apertura del diálogo de confirmación cuando se hace click en logout
+  // Abre el diálogo de confirmación para logout
   const handleDialogOpen = () => {
     setIsLogoutDialogOpen(true);
   };
 
-  // Si el usuario confirma, se realiza el logout y se actualiza el contexto
+  // Si el usuario confirma, se realiza el logout
   const handleConfirmLogout = async () => {
     setIsLogoutDialogOpen(false);
-    // Realiza el proceso de logout (puede ser una llamada a la API o lógica interna)
+    // Llamada al servicio para limpiar el token y la configuración del header
     await logout();
-    // Actualiza el estado de autenticación en el contexto, marcando al usuario como no logueado
-    onLogout();
+    // Despacha la acción para actualizar el estado de autenticación
+    dispatch(authLogout());
   };
 
+  // Cierra el diálogo sin realizar logout
   const handleCancelLogout = () => {
     setIsLogoutDialogOpen(false);
   };
 
-  // Renderiza el botón dependiendo de si el usuario está logueado o no
   return isLogged ? (
-    // Si está logueado, muestra el botón de "Logout", se maneja la confirmación
     <>
       <Button onClick={handleDialogOpen} $variant="secondary">
         Logout
@@ -45,7 +45,6 @@ export default function AuthButton() {
       />
     </>
   ) : (
-    // Si no está logueado, muestra el botón de "Login"
     <Button $variant="primary">Login</Button>
   );
 }

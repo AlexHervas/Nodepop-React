@@ -1,34 +1,31 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
-import { BrowserRouter } from "react-router-dom";
-import storage from "./utils/storage.ts";
-import { setAuthorizationHeader } from "./api/client.ts";
-import { AuthProvider } from "./pages/auth/AuthProvider.tsx";
 import "./index.css";
 
-// Obtiene el token de acceso desde el almacenamiento local (o de sesión) usando la clave 'auth'
-const accessToken = storage.get("auth");
+import App from "./App";
+import storage from "./utils/storage";
+import { setAuthorizationHeader } from "./api/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-// Si el token de acceso existe, lo establece en los encabezados de autorización para futuras solicitudes
+import configureStore from "./store";
+import { Provider } from "react-redux";
+
+// Obtiene el token de acceso desde el almacenamiento local
+const accessToken = storage.get("auth");
 if (accessToken) {
   setAuthorizationHeader(accessToken);
 }
 
-// Renderiza la aplicación en el DOM
+// Crea el router; en este ejemplo se usa una ruta comodín que renderiza <App />
+const router = createBrowserRouter([{ path: "*", element: <App /> }]);
+
+// Configura el store, pasando el estado inicial (con autenticación según el token) y el router
+const store = configureStore({ auth: !!accessToken }, router);
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {" "}
-    {/* Habilita el modo estricto para la aplicación, ayuda a detectar problemas en el desarrollo */}
-    <BrowserRouter>
-      {" "}
-      {/* Configura el enrutamiento de la aplicación con React Router */}
-      {/* El AuthProvider proporciona el estado de autenticación a toda la aplicación */}
-      <AuthProvider defaultIsLogged={!!accessToken}>
-        {" "}
-        {/* Pasa el estado de autenticación basado en si hay un token */}
-        <App /> {/* Renderiza el componente principal de la aplicación */}
-      </AuthProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 );

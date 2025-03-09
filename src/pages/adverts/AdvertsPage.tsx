@@ -1,58 +1,59 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { Advert } from "./types";
-import { getLatestAdverts } from "./service";
 import Page from "../../components/layout/Page";
 import FormField from "../../components/shared/FormField";
 import AdvertContainer from "./Advert";
 import EmptyAdvertsPage from "./EmptyAdvertsPage";
 import "./AdvertsPage.css";
 
+// Importamos nuestros hooks tipados y la acción asíncrona para cargar anuncios
+import { useAppDispatch, useAppSelector } from "../../store";
+import { advertsLoaded } from "../../store/actions";
+
 function AdvertsPage() {
-  // Estados para gestionar los anuncios, filtros y la visibilidad del panel de filtros
-  const [adverts, setAdverts] = useState<Advert[]>([]);
+  // Estados locales para los filtros y la visibilidad del panel
   const [filteredName, setFilteredName] = useState("");
   const [filteredSale, setFilteredSale] = useState("all");
   const [maxPrice, setMaxPrice] = useState(0);
   const [filteredTags, setFilteredTags] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
-  // useEffect para obtener los anuncios al montar el componente
+  // Acceso al store: obtenemos la parte de anuncios y el estado de carga
+  const dispatch = useAppDispatch();
+  const advertsState = useAppSelector((state) => state.adverts);
+  const adverts = advertsState.data || [];
+  const loading = !advertsState.loaded;
+
+  // Al montar, si los anuncios no están cargados, se dispara la acción para cargarlos
   useEffect(() => {
-    getLatestAdverts()
-      .then((response) => {
-        setAdverts(response);
+    if (!advertsState.loaded) {
+      dispatch(advertsLoaded() as any);
+    }
+  }, [dispatch, advertsState.loaded]);
 
-        // Calculamos el precio máximo entre los anuncios recibidos
-        if (response.length > 0) {
-          const maxAdvertPrice = Math.max(...response.map((ad) => ad.price));
-          setMaxPrice(maxAdvertPrice);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching adverts:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  // Cuando cambian los anuncios, actualizamos el precio máximo por defecto
+  useEffect(() => {
+    if (adverts.length > 0) {
+      const maxAdvertPrice = Math.max(...adverts.map((ad) => ad.price));
+      setMaxPrice(maxAdvertPrice);
+    }
+  }, [adverts]);
 
-  // Función para actualizar el filtro por nombre
+  // Actualiza el filtro por nombre
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setFilteredName(event.target.value);
   };
 
-  // Función para actualizar el filtro de tipo de venta (compra o venta)
+  // Actualiza el filtro de tipo de venta (sell / buy / all)
   const handleTypeRadio = (event: ChangeEvent<HTMLInputElement>) => {
     setFilteredSale(event.target.value);
   };
 
-  // Función para actualizar el filtro de precio máximo
+  // Actualiza el filtro de precio máximo
   const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMaxPrice(Number(event.target.value));
   };
 
-  // Función para manejar la selección de tags (agregar o quitar del filtro)
+  // Maneja la selección de tags (agregar o quitar)
   const handleTagChange = (tag: string) => {
     setFilteredTags((prevTags) =>
       prevTags.includes(tag)
@@ -67,7 +68,7 @@ function AdvertsPage() {
   const maxAdvertPrice =
     adverts.length > 0 ? Math.max(...adverts.map((ad) => ad.price)) : 100;
 
-  // Obtener una lista única de tags disponibles en los anuncios
+  // Lista única de tags disponibles
   const uniqueTags = Array.from(
     new Set(adverts.flatMap((advert) => advert.tags)),
   );
@@ -83,17 +84,16 @@ function AdvertsPage() {
     const matchesTags =
       filteredTags.length === 0 ||
       advert.tags.some((tag) => filteredTags.includes(tag));
-
     return matchesName && matchesSale && matchesMaxPrice && matchesTags;
   });
 
   // Opciones de venta disponibles
   const saleOptions = ["sell", "buy", "all"];
 
-  // Alternar la visibilidad del panel de filtros
+  // Alterna la visibilidad del panel de filtros
   const toggleFilters = () => setIsFiltersVisible((prev) => !prev);
 
-  // Cálculo del porcentaje del slider para mostrar la posición del precio seleccionado
+  // Calcula el porcentaje del slider para posicionar el valor visualmente
   const pricePercentage =
     ((maxPrice - minPrice) / (maxAdvertPrice - minPrice)) * 100 || 0;
 
