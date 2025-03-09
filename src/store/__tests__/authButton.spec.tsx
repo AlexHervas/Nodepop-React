@@ -6,7 +6,7 @@ import AuthButton from "../../pages/auth/AuthButton";
 import { authLogout } from "../../store/actions";
 
 // Creamos un reducer dummy que simplemente devuelve el estado inicial
-const dummyReducer = (state = { auth: true }, action: any) => state;
+const dummyReducer = (state = { auth: true }, _action: any) => state;
 
 // Creamos un store real con el reducer dummy
 const store = createStore(dummyReducer);
